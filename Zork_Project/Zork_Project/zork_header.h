@@ -1,21 +1,9 @@
 #ifndef ZORK_HEADER
 #define ZORK_HEADER
-#include <vector> 
+#include <vector>
 
 using namespace std;
-void go_north();
-void go_south();
-void go_east();
-void go_west();
-void list_inventory();
-void take_item(string item);
-void open_container(string container);
-void open_exit();
-void read_item(string item);
-void drop_item(string item);
-void put_item(string item, string container);
-void turn_on(string item);
-void attack_creature(string creature, string item);
+
 
 class creature_object
 {
@@ -27,14 +15,33 @@ public:
 class item_object
 {
 public:
-	item_object();
+	string name;
+	string writing;
+	string condition;
+	string turn_on_message;
+	string turn_on_action;
+
+	item_object(){
+
+	}
+	void init_name_and_writing(string name_, string writing_)
+	{
+		name = name_;
+		writing = writing_;
+	}
+	void init_condition_status(string condition_, string turn_on_message_, string turn_on_action_)
+	{
+		condition = condition_;
+		turn_on_message = turn_on_message_;
+		turn_on_action = turn_on_action_;
+	}
 
 };
 
 class container_object
 {
 public:
-	container_object();
+	container_object(){}
 
 };
 
@@ -42,7 +49,7 @@ public:
 class trigger_object
 {
 public:
-	trigger_object();
+	trigger_object(){}
 
 };
 
@@ -52,17 +59,26 @@ class room_object
 public:
 	string name;
 	string description;
+	string type;
 	vector<string> creatures;
 	vector<string> items;
 	vector<string> containers;
 	vector<trigger_object> triggers;
 	string borders[4];  //NORTH = IDX 0     EAST = IDX 1     SOUTH = IDX 2       WEST = IDX 3
 	room_object(){
+		type = "";
+		borders[0] = "";
+		borders[1] = "";
+		borders[2] = "";
+		borders[3] = "";
 	}
 	void init_name_and_description(string name_, string description_)
 	{
 		name = name_;
 		description = description_;
+	}
+	void init_type(string type_){
+		type = type_;
 	}
 	void set_borders(string name_, string direction)
 	{
@@ -100,5 +116,21 @@ public:
 
 	}
 };
+string go_north(room_object * current_room);
+string go_south(room_object * current_room);
+string go_east(room_object * current_room);
+string go_west(room_object * current_room);
+void list_inventory();
+void take_item(string item);
+void open_container(string container);
+void open_exit();
+void read_item(string item);
+void drop_item(string item);
+void put_item(string item, string container);
+void turn_on(string item);
+string Get_User_Input();
+void attack_creature(string creature, string item);
+room_object * Get_Start(vector<room_object*> rooms);
+room_object * Get_Room(vector<room_object*> rooms, string room);
 
 #endif /* ZORK_HEADER */

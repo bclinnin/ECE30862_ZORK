@@ -62,4 +62,7 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="E:\Downloads\sample.xml" />
+  </ItemGroup>
 </Project>
