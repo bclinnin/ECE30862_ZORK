@@ -41,7 +41,44 @@ public:
 class container_object
 {
 public:
-	container_object(){}
+	//STATUS VARIABLES
+	string name;
+	string item;
+	string status;
+	string accept;
+	//TRIGGER VARIABLES
+	string has;
+	string object;
+	string owner;
+	string print;
+	string action; //WILL NEED TO PARSE THIS (TODO: WRITE A FUNCTION FOR ACTIONS)
+	container_object(){
+		item = "";
+		status = "";
+		accept = "";
+		has = "";
+		object = "";
+		owner = "";
+		print = "";
+		action = "";
+	}
+	void init_non_trigger(string name_, string item_)
+	{
+		name = name_;
+		item = item_;
+	}
+	void init_trigger(string name_, string status_, string accept_, string has_, string object_, string owner_, string print_, string action_)
+	{
+		name = name_;
+		status = status_;
+		accept = accept_;
+		has = has_;
+		object = object_;
+		owner = owner_;
+		print = print_;
+		action = action_;
+	}
+
 
 };
 

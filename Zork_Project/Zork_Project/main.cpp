@@ -26,6 +26,7 @@ int main(int argc, const char * argv[]) {
 	room_object * current_room;
 	vector<room_object *> rooms;
 	vector<item_object *> items;
+	vector<container_object *> containers;
 	string user_input;
 	int counter;
 	string string_array[50];
@@ -105,8 +106,8 @@ int main(int argc, const char * argv[]) {
 			//printf("Creature %s is in the room.\n", creature_node->value());
 			creature_node = creature_node->next_sibling("creature");
 		}
-
-		//GET ALL OF THE TRIGGERS IN THE ROOM
+// TODO get the triggers in the rooms
+		//GET ALL OF THE TRIGGERS IN THE ROOM  
 		trigger_node = room_node->first_node("trigger");
 		if (trigger_node != 0){
 			trigger_type_node = trigger_node->first_node("type");
@@ -134,8 +135,8 @@ int main(int argc, const char * argv[]) {
 		room_node = room_node->next_sibling("room");
 	}
 
-
-	//GET ALL ITEM INFO
+	 
+	//GET ALL ITEM INFO             INFO IS ADDED INTO VECTOR
 	item_node = root_node->first_node("item");
 	while (item_node != 0){
 		item_object * item = new item_object;
@@ -156,13 +157,15 @@ int main(int argc, const char * argv[]) {
 		items.push_back(item);
 	}
 
-	//GET ALL CONTAINER INFO
+	//GET ALL CONTAINER INFO        INFO IS ADDED INTO VECTOR
 	container_node = root_node->first_node("container");
 	while (container_node != 0){
+		container_object * container = new container_object;
 		name_node = container_node->first_node("name");
 		item_node = container_node->first_node("item");
 		if (item_node != 0){
 			printf("Container %s contains %s\n", name_node->value(), item_node->value());
+			container->init_non_trigger(name_node->value(), item_node->value());
 		}
 		else{
 			condition_status = container_node->first_node("status");
@@ -175,9 +178,9 @@ int main(int argc, const char * argv[]) {
 			condition_print = trigger_node->first_node("print");
 			turn_on_action = trigger_node->first_node("action");
 			printf("The %s is %s but if you put in %s then it %s has a %s in %s and you will print %s and execute %s\n", name_node->value(), condition_status->value(), accept_node->value(), condition_has->value(), condition_object->value(), condition_owner->value(), condition_print->value(), turn_on_action->value());
-
+			container->init_trigger(name_node->value(), condition_status->value(), accept_node->value(), condition_has->value(), condition_object->value(), condition_owner->value(), condition_print->value(), turn_on_action->value());
 		}
-
+		containers.push_back(container);
 		container_node = container_node->next_sibling("container");
 	}
 
