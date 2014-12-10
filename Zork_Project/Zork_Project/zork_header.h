@@ -4,12 +4,60 @@
 
 using namespace std;
 
+class trigger_object
+{
+public:
+	string type;
+	string command;
+	string object;
+	string has;
+	string owner;
+	string status;
+	string print;
+	string action;
+
+	trigger_object(){
+		type = "";
+		command = "";
+		object = "";
+		has = "";
+		owner = "";
+		status = "";
+		print = "";
+		action = "";
+	}
+
+	
+
+};
 
 class creature_object
 {
 public:
-	creature_object();
+	string name;
+	string vulnerability;
 
+	string vulnerability_object;
+	string vulnerability_object_status;
+	string death_message;
+	vector<string> death_actions;   //didn't write a function for this, I just added them to the vector directly from main ( Roughly at line 204)
+	trigger_object * creature_trigger;
+	creature_object(){
+		name = "";
+		vulnerability = "";
+		vulnerability_object = "";
+		vulnerability_object_status = "";
+		death_message = "";
+		creature_trigger = new trigger_object;
+	}
+	void init_creature(string name_, string vulnerability_, string vulnerability_object_, string vulnerability_object_status_, string death_message_)
+	{
+		name = name_;
+		vulnerability = vulnerability_;
+		vulnerability_object = vulnerability_object_;
+		vulnerability_object_status = vulnerability_object_status_;
+		death_message = death_message_;
+	}
 };
 
 class item_object
@@ -83,13 +131,6 @@ public:
 };
 
 
-class trigger_object
-{
-public:
-	trigger_object(){}
-
-};
-
 class room_object
 {
 
@@ -100,8 +141,8 @@ public:
 	vector<string> creatures;
 	vector<string> items;
 	vector<string> containers;
-	vector<trigger_object> triggers;
 	string borders[4];  //NORTH = IDX 0     EAST = IDX 1     SOUTH = IDX 2       WEST = IDX 3
+	vector<trigger_object *> room_triggers;
 	room_object(){
 		type = "";
 		borders[0] = "";
@@ -148,9 +189,9 @@ public:
 	{
 		creatures.push_back(creature_);
 	}
-	void add_trigger()
+	trigger_object * add_trigger()
 	{
-
+		return (new trigger_object);
 	}
 };
 string go_north(room_object * current_room);

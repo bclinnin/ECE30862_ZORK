@@ -27,6 +27,7 @@ int main(int argc, const char * argv[]) {
 	vector<room_object *> rooms;
 	vector<item_object *> items;
 	vector<container_object *> containers;
+	vector<creature_object *> creatures;
 	string user_input;
 	int counter;
 	string string_array[50];
@@ -106,12 +107,16 @@ int main(int argc, const char * argv[]) {
 			//printf("Creature %s is in the room.\n", creature_node->value());
 			creature_node = creature_node->next_sibling("creature");
 		}
-// TODO get the triggers in the rooms
+
+//TOMMY: DOES THIS NEED TO BE WHILE TRIGGER NODE != 0 ?... WHAT IF A ROOM HAS MULTIPLE TRIGGERS
 		//GET ALL OF THE TRIGGERS IN THE ROOM  
 		trigger_node = room_node->first_node("trigger");
 		if (trigger_node != 0){
+			trigger_object * trigger = room->add_trigger();
 			trigger_type_node = trigger_node->first_node("type");
 			command_node = trigger_node->first_node("command");
+			trigger->type = trigger_type_node->value();
+			trigger->command = command_node->value();
 			printf("The trigger is of type %s, with command %s\n", trigger_type_node->value(), command_node->value());
 			condition_node = trigger_node->first_node("condition");
 			if (condition_node != 0){
@@ -120,14 +125,22 @@ int main(int argc, const char * argv[]) {
 				if (condition_has != 0){
 					condition_object = condition_node->first_node("object");
 					condition_owner = condition_node->first_node("owner");
+					trigger->owner = condition_owner->value();
+					trigger->has = condition_has->value();
+					trigger->object = condition_object->value();
+					trigger->print = condition_print->value();
 					printf("If %s %s has %s, then print %s\n", condition_owner->value(), condition_has->value(), condition_object->value(), condition_print->value());
 				}
 				else{
 					condition_object = condition_node->first_node("object");
 					condition_status = condition_node->first_node("status");
+					trigger->object = condition_object->value();
+					trigger->status = condition_status->value();
+					trigger->print = condition_print->value();
 					printf("If %s is %s then print %s \n", condition_object->value(), condition_status->value(), condition_print->value());
 				}
 			}
+			room->room_triggers.push_back(trigger);
 			trigger_node = trigger_node->next_sibling("trigger");
 		}
 		rooms.push_back(room);  //ADDS THE CURRENT ROOM INTO THE ROOM VECTOR FOR STORAGE
@@ -187,6 +200,7 @@ int main(int argc, const char * argv[]) {
 	//GET ALL CREATURE INFO
 	creature_node = root_node->first_node("creature");
 	while (creature_node != 0){
+		creature_object * creature = new creature_object;
 		//GET ALL OF THE VULNERABILITY OUT OF HERE LIKE WHAT THE FUCK HAPPENS IF YOU GET ATTACKED LIKE OMFG LIKE WHAT WOULD YOU DO LIKE I WOULD LIKE TOTALLY DIE AND STUFF
 		name_node = creature_node->first_node("name");
 		vulnerability_node = creature_node->first_node("vulnerability");
@@ -195,9 +209,11 @@ int main(int argc, const char * argv[]) {
 		condition_object = condition_node->first_node("object");
 		condition_status = condition_node->first_node("status");
 		condition_print = attack_node->first_node("print");
+		creature->init_creature(name_node->value(), vulnerability_node->value(), condition_object->value(), condition_status->value(), condition_print->value());
 		printf("Because %s is vulnerable to %s when %s is attacked with %s with status %s the statement: %s is printed and the follwing are performed:\n", name_node->value(), vulnerability_node->value(), name_node->value(), condition_object->value(), condition_status->value(), condition_print->value());
 		turn_on_action = attack_node->first_node("action");
 		while (turn_on_action != 0){
+			creature->death_actions.push_back(turn_on_action->value());
 			printf("%s\n", turn_on_action->value());
 			turn_on_action = turn_on_action->next_sibling("action");
 		}
@@ -208,9 +224,13 @@ int main(int argc, const char * argv[]) {
 		condition_object = condition_node->first_node("object");
 		condition_status = condition_node->first_node("status");
 		condition_print = trigger_node->first_node("print");
+		creature->creature_trigger->type = trigger_type_node->value();
+		creature->creature_trigger->object = condition_object->value();
+		creature->creature_trigger->status = condition_status->value();
+		creature->creature_trigger->print = condition_print->value();
 		printf("Additionally, there is a %s trigger where if a %s is %s the following is printed: %s \n", trigger_type_node->value(), condition_object->value(), condition_status->value(), condition_print->value());
 
-
+		creatures.push_back(creature);
 		creature_node = creature_node->next_sibling("creature");
 	}
 
